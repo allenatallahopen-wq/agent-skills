@@ -5,6 +5,7 @@
 # Sources:
 #   mattpocock/skills                  -> skills/*/*            (all, incl. misc + in-progress)
 #   anthropics/knowledge-work-plugins  -> */skills/*, partner-built/*/skills/*
+#   addyosmani/clarity                 -> clarity (SKILL.md, references, scripts, LICENSE)
 #
 # Name rules: a skill keeps its frontmatter name unless that name appears more
 # than once or clashes with an already-installed skill; then it becomes
@@ -18,6 +19,7 @@ trap 'rm -rf "$work"' EXIT
 
 git clone -q --depth 1 https://github.com/mattpocock/skills.git "$work/mp"
 git clone -q --depth 1 https://github.com/anthropics/knowledge-work-plugins.git "$work/kwp"
+git clone -q --depth 1 https://github.com/addyosmani/clarity.git "$work/clarity"
 
 rm -rf "$dest"
 mkdir -p "$dest"
@@ -75,12 +77,25 @@ for plugin, name, root in sorted(rows, key=lambda r: r[2]):
     if final != name:
         renamed.append(f"{os.path.relpath(root, kwp)} -> {final}")
 
+# 3. addyosmani/clarity: single root-level skill; copy only what SKILL.md uses
+cl = os.path.join(work, "clarity")
+target = os.path.join(dest, "clarity")
+if os.path.exists(target):
+    sys.exit("name clash: clarity")
+os.makedirs(target)
+for item in ("SKILL.md", "LICENSE", "references", "scripts"):
+    src = os.path.join(cl, item)
+    if os.path.isdir(src):
+        shutil.copytree(src, os.path.join(target, item))
+    else:
+        shutil.copy2(src, target)
+
 print(f"installed {len(os.listdir(dest))} skills")
 for r in renamed:
     print("  renamed", r)
 EOF
 
-for r in mp kwp; do
+for r in mp kwp clarity; do
   printf '%s %s\n' "$r" "$(git -C "$work/$r" rev-parse --short HEAD)"
 done > "$repo_root/.kiro/skills.lock"
 echo "pinned commits written to .kiro/skills.lock"
