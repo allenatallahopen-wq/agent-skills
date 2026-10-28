@@ -1,10 +1,10 @@
 # agent-skills
 
-Kiro workspace config: identity (`SOUL.md`), memory (`memory/`, `NOW.md`), and 265 auto-used skills in `.kiro/skills/`.
+Kiro workspace config: identity (`SOUL.md`), memory (`memory/`, `NOW.md`), and 323 auto-used skills in `.kiro/skills/`.
 
 - Always-on steering: `.kiro/steering/soul.md`, `.kiro/steering/skills.md`
 - Update skills: `./scripts/sync-skills.sh`
-- Sources: [mattpocock/skills](https://github.com/mattpocock/skills), [anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins), [NousResearch/hermes-official-plugins](https://github.com/NousResearch/hermes-official-plugins) `rea/` (see their licenses)
+- Sources: [mattpocock/skills](https://github.com/mattpocock/skills), [anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins), [NousResearch/hermes-official-plugins](https://github.com/NousResearch/hermes-official-plugins) `rea/`, [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) `skills/` (see their licenses)
 
 ## REA plugin
 

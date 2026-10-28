@@ -4,7 +4,7 @@ inclusion: always
 
 # Use skills automatically
 
-Every folder in `.kiro/skills/` is a skill (265, from `mattpocock/skills`, `anthropics/knowledge-work-plugins` and the REA plugin in `NousResearch/hermes-official-plugins`; commits pinned in `.kiro/skills.lock`).
+Every folder in `.kiro/skills/` is a skill (323, from `mattpocock/skills`, `anthropics/knowledge-work-plugins`, the REA plugin in `NousResearch/hermes-official-plugins`, and the built-in skills in `NousResearch/hermes-agent`; commits pinned in `.kiro/skills.lock`).
 
 - Before starting any task, check whether a skill's description matches it. If one does, load and follow it without being asked. If several match, use the most specific.
 - A user typing `/<skill-name>` means: load that skill now.
