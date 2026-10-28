@@ -1,0 +1,11 @@
+{
+  "$comment": "REA MCP config for this skill. Auto-approve is intentionally OFF: side-effecting calls are confirmed per the skill's step 5. Only documented REA schema switches are set here.",
+  "rea": {
+    "command": "npx",
+    "args": ["-y", "rea-agents@6.7.0", "mcp"],
+    "env": {
+      "REA_MCP_INPUT_SCHEMA_PROFILE": "compact",
+      "REA_MCP_OUTPUT_SCHEMA_PROFILE": "off"
+    }
+  }
+}

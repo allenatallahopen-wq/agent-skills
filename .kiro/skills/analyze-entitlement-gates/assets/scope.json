@@ -1,0 +1,29 @@
+{
+  "$comment": "Declared scope for an engagement. Filled in before any target-touching call. Cited in the final report. This records authorization; it does not grant it.",
+  "target": {
+    "name": "",
+    "artifact_path": "",
+    "sha256": "",
+    "bundle_id_or_url": "",
+    "version": ""
+  },
+  "authorization": {
+    "basis": "",
+    "$basis_options": ["own-software", "client-authorized", "ctf", "offline-interop-study"],
+    "reference": "",
+    "$reference_note": "contract id, CTF name, or statement of ownership",
+    "written_scope_doc": ""
+  },
+  "runtime_side_effects": {
+    "allowed": false,
+    "$note": "true only when the scope explicitly permits running/instrumenting/mutating the target. Static read-only analysis does not require this.",
+    "device_actions_allowed": false,
+    "instrumentation_allowed": false
+  },
+  "out_of_scope_ack": {
+    "no_redistributable_patched_build": true,
+    "no_production_payment_bypass": true
+  },
+  "declared_by": "",
+  "declared_at": ""
+}
