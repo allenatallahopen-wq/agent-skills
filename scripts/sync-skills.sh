@@ -5,6 +5,8 @@
 # Sources:
 #   mattpocock/skills                  -> skills/*/*            (all, incl. misc + in-progress)
 #   anthropics/knowledge-work-plugins  -> */skills/*, partner-built/*/skills/*
+#   NousResearch/hermes-official-plugins -> rea/skills/*         (pinned commit, see rea_commit)
+#   NousResearch/hermes-agent            -> skills/*/*/SKILL.md  (pinned commit, see hermes_commit)
 #
 # Name rules: a skill keeps its frontmatter name unless that name appears more
 # than once or clashes with an already-installed skill; then it becomes
@@ -16,8 +18,26 @@ dest="$repo_root/.kiro/skills"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
+# Pinned commit of the REA plugin (Agent Plugins v1 package, skills vendored
+# as-is). Bump deliberately; the MCP server version lives in .kiro/settings/mcp.json.
+rea_commit=1690b63a4790cb821fb6a319ba524815d4e09411
+
+# Pinned commit of the Hermes Agent built-in skills (skills/<category>/<skill>,
+# vendored flat as-is). Bump deliberately.
+hermes_commit=0431192d69d4afd2443a7da15bb9e129a424414c
+
 git clone -q --depth 1 https://github.com/mattpocock/skills.git "$work/mp"
 git clone -q --depth 1 https://github.com/anthropics/knowledge-work-plugins.git "$work/kwp"
+
+git clone -q --filter=blob:none --no-checkout \
+  https://github.com/NousResearch/hermes-official-plugins.git "$work/rea"
+git -C "$work/rea" sparse-checkout set rea
+git -C "$work/rea" checkout -q "$rea_commit"
+
+git clone -q --filter=blob:none --no-checkout \
+  https://github.com/NousResearch/hermes-agent.git "$work/hermes"
+git -C "$work/hermes" sparse-checkout set skills
+git -C "$work/hermes" checkout -q "$hermes_commit"
 
 rm -rf "$dest"
 mkdir -p "$dest"
@@ -75,12 +95,29 @@ for plugin, name, root in sorted(rows, key=lambda r: r[2]):
     if final != name:
         renamed.append(f"{os.path.relpath(root, kwp)} -> {final}")
 
+# 3. REA plugin: both skills, vendored under their own names
+rea = os.path.join(work, "rea", "rea", "skills")
+for s in sorted(os.listdir(rea)):
+    sdir = os.path.join(rea, s)
+    if os.path.isfile(os.path.join(sdir, "SKILL.md")):
+        install(sdir, skill_name(sdir))
+
+# 4. Hermes Agent built-in skills: every skills/<category>/<skill>/SKILL.md,
+#    vendored flat under the skill's own folder name
+hermes = os.path.join(work, "hermes", "skills")
+for root, dirs, files in sorted(os.walk(hermes)):
+    if "SKILL.md" in files:
+        install(root, skill_name(root))
+
 print(f"installed {len(os.listdir(dest))} skills")
 for r in renamed:
     print("  renamed", r)
 EOF
 
-for r in mp kwp; do
+cp "$work/rea/rea/LICENSE" "$repo_root/licenses/rea-LICENSE"
+cp "$work/hermes/LICENSE" "$repo_root/licenses/hermes-agent-LICENSE"
+
+for r in mp kwp rea hermes; do
   printf '%s %s\n' "$r" "$(git -C "$work/$r" rev-parse --short HEAD)"
 done > "$repo_root/.kiro/skills.lock"
 echo "pinned commits written to .kiro/skills.lock"
